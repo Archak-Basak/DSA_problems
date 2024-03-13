@@ -1,0 +1,71 @@
+Write a function to find the longest common prefix string amongst an array of strings.
+If there is no common prefix, return an empty string "".
+
+Example 1:
+
+Input: strs = ["flower","flow","flight"]
+Output: "fl"
+
+Example 2:
+
+Input: strs = ["dog","racecar","car"]
+Output: ""
+Explanation: There is no common prefix among the input strings.
+
+Constraints:
+
+1 <= strs.length <= 200
+0 <= strs[i].length <= 200
+strs[i] consists of only lowercase English letters.
+
+---------------------------------------------------------------CODE-------------------------------------------------------
+in Java
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--
+class Solution {
+    public String longestCommonPrefix(String[] strs) {
+
+        if(strs.length == 0|| strs == null)
+            return "";
+
+        StringBuilder commPrefix = new StringBuilder();
+        String fStr = strs[0];
+
+        for(int i = 0; i < fStr.length(); i++) {
+
+            char currChar = fStr.charAt(i);
+            for(int j = 1; j < strs.length; j++) {
+
+                if(i >= strs[j].length() || strs[j].charAt(i) != currChar) {
+
+                    return commPrefix.toString();
+                }
+            }
+            commPrefix.append(currChar);
+        }
+        return commPrefix.toString();
+    }
+}
+
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--
+in Rust
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--
+impl Solution {
+    pub fn longest_common_prefix(strs: Vec<String>) -> String {
+        if strs.is_empty() {
+            return String::new();
+        }
+
+        let f_str = &strs[0];
+        let mut comm_prefix = String::new();
+
+        for (i, &ch) in f_str.as_bytes().iter().enumerate() {
+            for str in strs.iter().skip(1) {
+                if i >= str.len() || str.as_bytes()[i] != ch {
+                    return comm_prefix;
+                }
+            }
+            comm_prefix.push(ch as char);
+        }
+        comm_prefix
+    }
+}

@@ -1,0 +1,85 @@
+There is an m x n grid with a ball. The ball is initially at the position [startRow, startColumn]. You are allowed to move the ball to one of the four adjacent cells in the grid (possibly out of the grid crossing the grid boundary). You can apply at most maxMove moves to the ball.
+
+Given the five integers m, n, maxMove, startRow, startColumn, return the number of paths to move the ball out of the grid boundary. Since the answer can be very large, return it modulo 109 + 7.
+
+Example 1:
+
+Input: m = 2, n = 2, maxMove = 2, startRow = 0, startColumn = 0
+Output: 6
+
+Example 2:
+
+Input: m = 1, n = 3, maxMove = 3, startRow = 0, startColumn = 1
+Output: 12
+
+Constraints:
+
+1 <= m, n <= 50
+0 <= maxMove <= 50
+0 <= startRow < m
+0 <= startColumn < n
+
+---------------------------------------------------------------CODE-------------------------------------------------------
+in Java
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--
+import java.util.HashMap;
+import java.util.Map;
+class Solution {
+    int MOD = 1000000007;
+    public int findPaths(int m, int n, int maxMove, int startRow, int startColumn) {
+        Map<String, Integer> boundary = new HashMap<>();
+        return OoB(m, n, maxMove, startRow, startColumn, boundary);
+    }
+    private int OoB(int m, int n, int maxMove, int x, int y, Map<String, Integer> boundary) {
+        if(x < 0 || x >= m || y < 0 || y >= n)
+            return 1;
+        if(maxMove == 0)
+            return 0;
+        String key = x + "," + y + "," + maxMove;
+        if(boundary.containsKey(key))
+            return boundary.get(key);
+        int res = 0;
+        int[] dx = {1, -1, 0, 0};
+        int[] dy = {0, 0, 1, -1};
+        for(int i = 0; i < 4; i++) {
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+            res += OoB(m, n, maxMove - 1, nx, ny, boundary);
+            res %= MOD;
+        }
+        boundary.put(key, res);
+        return res;
+    }
+}
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--
+in Rust
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--
+use std::collections::HashMap;
+const M: i64 = 1_000_000_007;
+impl Solution {
+    pub fn find_paths(m: i32, n: i32, max_move: i32, start_row: i32, start_column: i32) -> i32 {
+        let mut cache: HashMap<(i32, i32, i32), i64> = HashMap::new();
+
+        fn oob(x: i32, y: i32, moves: i32, m: i32, n: i32, max_move: i32, cache: &mut HashMap<(i32, i32, i32), i64>,) -> i64 {
+            if x < 0 || x >= m || y < 0 || y >= n {
+                return 1;
+            }
+            if moves == max_move {
+                return 0;
+            }
+            if let Some(&res) = cache.get(&(x, y, moves)) {
+                return res;
+            }
+            let mut res = 0;
+            for &(dx, dy) in &[(1, 0), (-1, 0), (0, 1), (0, -1)] {
+                let new_x = x + dx;
+                let new_y = y + dy;
+                res += oob(new_x, new_y, moves + 1, m, n, max_move, cache);
+                res %= M;
+            }
+            cache.insert((x, y, moves), res);
+            res
+        }
+        oob(start_row, start_column, 0, m, n, max_move, &mut cache) as i32
+    }
+}

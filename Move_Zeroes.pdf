@@ -1,0 +1,46 @@
+Given an integer array nums, move all 0's to the end of it while maintaining the relative order of the non-zero elements.
+Note that you must do this in-place without making a copy of the array.
+
+Example 1:
+
+Input: nums = [0,1,0,3,12]
+Output: [1,3,12,0,0]
+
+Example 2:
+
+Input: nums = [0]
+Output: [0]
+ 
+Constraints:
+
+1 <= nums.length <= 104
+-231 <= nums[i] <= 231 - 1
+-----------------------------------------------------------------------------------------CODE--------------------------------------------------------------------
+class Solution {
+    public void moveZeroes(int[] nums) {
+        int nonZero = 0;
+        for(int i = 0; i < nums.length; i++) { // Moving the Non-zeroes
+            if(nums[i] != 0) {
+                nums[nonZero++] = nums[i];
+            }
+        }
+        for(int i = nonZero; i < nums.length; i++) { //Moving the Zeroes
+            nums[i] = 0;
+        }
+    }
+}
+pub fn sort_array_by_parity(mut nums: Vec<i32>) -> Vec<i32> {
+        let (mut left, mut right) = (0, nums.len() - 1);
+        if left < right {
+            while left < right && nums[left] % 2 == 0 {
+                left += 1;
+            }
+            while right > left && nums[right] % 2 != 0 {
+                right -= 1;
+            }
+            if left < right {
+                nums.swap(left, right);
+            }
+        }
+        nums
+    }

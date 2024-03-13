@@ -1,0 +1,73 @@
+You are given an integer array arr. Sort the integers in the array in ascending order by the number of 1's in their binary representation and in case of two or more integers have the same number of 1's you have to sort them in ascending order.
+
+Return the array after sorting it.
+
+Example 1:
+
+Input: arr = [0,1,2,3,4,5,6,7,8]
+Output: [0,1,2,4,8,3,5,6,7]
+Explantion: [0] is the only integer with 0 bits.
+[1,2,4,8] all have 1 bit.
+[3,5,6] have 2 bits.
+[7] has 3 bits.
+The sorted array by bits is [0,1,2,4,8,3,5,6,7]
+
+Example 2:
+
+Input: arr = [1024,512,256,128,64,32,16,8,4,2,1]
+Output: [1,2,4,8,16,32,64,128,256,512,1024]
+Explantion: All integers have 1 bit in the binary representation, you should just sort them in ascending order.
+
+---------------------------------------------------------------CODE-------------------------------------------------------
+in Java
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--
+class Solution {
+    public int[] sortByBits(int[] arr) {
+
+        int[] res = new int[arr.length];
+        Integer[] newRes = new Integer[arr.length];
+        // Step 1 : Using custom Comparator for comparing
+        for(int i = 0; i < arr.length; i++) {
+            newRes[i] = arr[i];
+        }
+        Arrays.sort(newRes, (a, b) -> {
+            int countA = countSetBits(a);
+            int countB = countSetBits(b);
+
+            return countA != countB ? countA - countB : a - b ;
+        });
+
+        // Step 2 : Copy the sorted array back into resultant array
+        for(int i = 0; i < arr.length; i++) {
+            res[i] = newRes[i];
+        }
+        return res;
+    }
+    private int countSetBits(int n) {
+        int sum = 0;
+        while(n > 0) {
+            sum += n & 1;
+            n >>= 1;
+        }
+        return sum;
+    }
+}
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--
+in Rust
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--
+use num_integer::Integer;
+impl Solution {
+    pub fn sort_by_bits(arr: Vec<i32>) -> Vec<i32> {
+        let mut res: Vec<i32> = arr.clone();
+
+        // Step 1 : Using custom Comparator for comparing
+        res.sort_by(|&a, &b| {
+            let count_a = a.count_ones();
+            let count_b = b.count_ones();
+
+            count_a.cmp(&count_b).then(a.cmp(&b))
+        });
+        // Step 2 : Copy the sorted array back into resultant array
+        res
+    }
+}

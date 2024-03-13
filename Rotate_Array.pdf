@@ -1,0 +1,81 @@
+Given an integer array nums, rotate the array to the right by k steps, where k is non-negative.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,3,4,5,6,7], k = 3
+Output: [5,6,7,1,2,3,4]
+Explanation:
+rotate 1 steps to the right: [7,1,2,3,4,5,6]
+rotate 2 steps to the right: [6,7,1,2,3,4,5]
+rotate 3 steps to the right: [5,6,7,1,2,3,4]
+Example 2:
+
+Input: nums = [-1,-100,3,99], k = 2
+Output: [3,99,-1,-100]
+Explanation: 
+rotate 1 steps to the right: [99,-1,-100,3]
+rotate 2 steps to the right: [3,99,-1,-100]
+ 
+
+Constraints:
+
+1 <= nums.length <= 105
+-231 <= nums[i] <= 231 - 1
+0 <= k <= 105
+
+------------------------------------------------------------CODE---------------------------------------------------------
+
+import java.util.*;
+
+class Solution {
+    public void rotate(int[] nums, int k) {
+
+        int l = nums.length;
+         
+         k = k % l;
+
+         int[] rotate = new int[l];
+
+        for(int i = 0; i < l; i++) {
+
+            int newIdx = (i + k) % l;
+
+            rotate[newIdx] = nums[i];  
+        }
+        System.arraycopy(rotate, 0, nums, 0, l);
+		
+		or 
+		
+		 for (int i = 0; i < n; i++) {
+            array[i] = rotatedArray[i];
+        }
+    }
+	public static void main(String[] args) {
+        Scanner ab = new Scanner(System.in);
+
+         ArrayList<Integer> dynamicArray = new ArrayList<>();
+
+        System.out.println("Enter numeric elements into the array (enter a non-integer to finish):");
+
+        while (true) {
+		
+            try {
+			
+                int nums = ab.nextInt();
+				
+                dynamicArray.add(nums);
+				
+            } catch (InputMismatchException e) {
+			
+                // User entered a non-integer, break the loop
+                break;
+            }
+        }
+        
+        System.out.println(removeDuplicates(nums);
+
+        ab.close();
+		}
+}

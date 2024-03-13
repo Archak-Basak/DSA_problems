@@ -1,0 +1,67 @@
+Given two strings s and t, determine if they are isomorphic.
+
+Two strings s and t are isomorphic if the characters in s can be replaced to get t.
+
+All occurrences of a character must be replaced with another character while preserving the order of characters.
+No two characters may map to the same character, but a character may map to itself.
+
+
+Example 1:
+
+Input: s = "egg", t = "add"
+Output: true
+
+Example 2:
+
+Input: s = "foo", t = "bar"
+Output: false
+
+Example 3:
+
+Input: s = "paper", t = "title"
+Output: true
+ 
+
+Constraints:
+
+1 <= s.length <= 5 * 104
+t.length == s.length
+s and t consist of any valid ascii character.
+
+-----------------------------------------------------------------------------------------CODE--------------------------------------------------------------------
+import java.util.*;
+
+class Solution {
+    public boolean isIsomorphic(String s, String t) {
+
+        if (s.length() != t.length()) {
+            return false;
+        }
+
+        int len = s.length();
+        // Create two arrays to store character mappings
+        char[] map1 = new char[256];
+        char[] map2 = new char[256];
+
+        for (int i = 0; i < len; i++) {
+            char char1 = s.charAt(i);
+            char char2 = t.charAt(i);
+
+            // If the character in str1 has not been mapped yet, map it to the character in str2
+            if (map1[char1] == 0) {
+                map1[char1] = char2;
+            } else if (map1[char1] != char2) {
+                // If the mapping is inconsistent, return false
+                return false;
+            }
+
+            // Do the same for str2 to str1
+            if (map2[char2] == 0) {
+                map2[char2] = char1;
+            } else if (map2[char2] != char1) {
+                return false;
+            }
+        }
+        return true;
+    }
+}

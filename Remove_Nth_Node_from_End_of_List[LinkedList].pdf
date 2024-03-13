@@ -1,0 +1,112 @@
+Given the head of a linked list, remove the nth node from the end of the list and return its head.
+
+Example 1:
+
+Input: head = [1,2,3,4,5], n = 2
+Output: [1,2,3,5]
+
+Example 2:
+
+Input: head = [1], n = 1
+Output: []
+
+Example 3:
+
+Input: head = [1,2], n = 1
+Output: [1]
+
+Constraints:
+
+The number of nodes in the list is sz.
+1 <= sz <= 30
+0 <= Node.val <= 100
+1 <= n <= sz
+--------------------------------------------------------------------CODE--------------------------------------------------------------
+in Java
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=--=-=
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode ptr = head;
+        int len = findSize(head); // find the size
+        if(len == n) { // if size is equal to the n, remove node at head
+            ptr = ptr.next;
+            head = ptr;
+            return head;
+        }
+        // move ptr to the node just before the node to remove
+        for(int i = 0; i < len - n - 1; i++) {
+            ptr = ptr.next;
+        }
+        // check if the node to remove is the last node
+        if(ptr.next.next != null) {
+            ptr.next = ptr.next.next;
+        } else {
+            ptr.next = null;
+        }
+        return head;
+    }
+    // method to find the size of the list
+    public int findSize(ListNode head) {
+        ListNode ptr = head;
+        int size = 0;
+        // increase the size till we reach the end of the list
+        while(ptr != null) {
+            size += 1;
+            ptr = ptr.next;
+        }
+        return size;
+    }
+}
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-
+in Rust
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-----=-=-
+// Definition for singly-linked list.
+// #[derive(PartialEq, Eq, Clone, Debug)]
+// pub struct ListNode {
+//   pub val: i32,
+//   pub next: Option<Box<ListNode>>
+// }
+//
+// impl ListNode {
+//   #[inline]
+//   fn new(val: i32) -> Self {
+//     ListNode {
+//       next: None,
+//       val
+//     }
+//   }
+// }
+impl Solution {
+    pub fn remove_nth_from_end(mut head: Option<Box<ListNode>>, n: i32) -> Option<Box<ListNode>> {
+        let len = Solution::find_size(&head);
+        if len == n {
+            return head.unwrap().next;
+        }
+        let mut ptr = &mut head;
+        for _ in 0..len - n - 1 {
+            ptr = &mut ptr.as_mut().unwrap().next;
+        }
+        let next = ptr.as_mut().unwrap().next.as_mut().unwrap().next.take();
+        ptr.as_mut().unwrap().next = next;
+        head
+    }
+    fn find_size(head: &Option<Box<ListNode>>) -> i32 {
+        let mut size = 0;
+        let mut ptr = head.as_ref();
+        while let Some(node) = ptr {
+            size += 1;
+            ptr = node.next.as_ref();
+        }
+        size
+    }
+}

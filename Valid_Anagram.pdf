@@ -1,0 +1,56 @@
+An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
+
+Example 1:
+
+Input: s = "anagram", t = "nagaram"
+Output: true
+
+Example 2:
+
+Input: s = "rat", t = "car"
+Output: false
+
+
+Constraints:
+
+1 <= s.length, t.length <= 5 * 104
+s and t consist of lowercase English letters.
+
+Follow up: What if the inputs contain Unicode characters? How would you adapt your solution to such a case?
+
+Code:
+
+
+import java.util.*;
+
+class Valid_Anagram {
+    public boolean isAnagram(String s, String t) {
+    if (s.length() != t.length()) {
+        return false;
+     }
+
+    int[] charCount = new int[26];
+
+    for (int i = 0; i < s.length(); i++) {
+        charCount[s.charAt(i) - 'a']++;
+        charCount[t.charAt(i) - 'a']--;
+    }
+
+    for (int count : charCount) {
+        if (count != 0) {
+            return false;
+        }
+    }
+    return true;
+    }
+     public static void main(String[] args) {
+        Scanner ab = new Scanner(System.in);
+
+        String str = ab.next();
+        String st2 = ab.next();
+
+        String res = isAnagram(str, str2);
+        System.out.println(res);
+        ab.close();
+    }
+}

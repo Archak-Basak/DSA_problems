@@ -1,0 +1,74 @@
+Given two strings text1 and text2, return the length of their longest common subsequence. If there is no common subsequence, return 0.
+
+A subsequence of a string is a new string generated from the original string with some characters (can be none) deleted without changing the relative order of the remaining characters.
+
+For example, "ace" is a subsequence of "abcde".
+A common subsequence of two strings is a subsequence that is common to both strings.
+
+Example 1:
+
+Input: text1 = "abcde", text2 = "ace"
+Output: 3
+Explanation: The longest common subsequence is "ace" and its length is 3.
+
+Example 2:
+
+Input: text1 = "abc", text2 = "abc"
+Output: 3
+Explanation: The longest common subsequence is "abc" and its length is 3.
+
+Example 3:
+
+Input: text1 = "abc", text2 = "def"
+Output: 0
+Explanation: There is no such common subsequence, so the result is 0.
+
+Constraints:
+
+1 <= text1.length, text2.length <= 1000
+text1 and text2 consist of only lowercase English characters.
+
+---------------------------------------------------------------CODE-------------------------------------------------------
+in Java
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--
+class Solution {
+    public int longestCommonSubsequence(String text1, String text2) {
+        int l1 = text1.length();
+        int l2 = text2.length();
+        int[][] lcs = new int[l1 + 1][l2 + 1];
+        for (int i = 0; i <= l1; i++) {
+            for (int j = 0; j <= l2; j++) {
+                if (i == 0 || j == 0) {
+                    lcs[i][j] = 0;
+                } else if (text1.charAt(i - 1) == text2.charAt(j - 1)) {
+                    lcs[i][j] = lcs[i - 1][j - 1] + 1;
+                } else {
+                    lcs[i][j] = Math.max(lcs[i - 1][j], lcs[i][j - 1]);
+                }
+            }
+        }
+        return lcs[l1][l2];
+    }
+}
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--
+in Rust
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--
+impl Solution {
+    pub fn longest_common_subsequence(text1: String, text2: String) -> i32 {
+        let mut l1 = text1.len();
+        let mut l2 = text2.len();
+        let mut lcs: Vec<Vec<usize>> = vec![vec![0; l2 + 1];l1 + 1];
+        for i in 0..=l1 {
+            for j in 0..=l2 {
+                if i == 0 || j == 0 {
+                    lcs[i][j] = 0;
+                } else if text1.chars().nth(i - 1) == text2.chars().nth(j - 1) {
+                    lcs[i][j] = lcs[i - 1][j - 1] + 1;
+                } else {
+                    lcs[i][j] = lcs[i - 1][j].max(lcs[i][j - 1]);
+                }
+            }
+        }
+        lcs[l1][l2] as i32
+    }
+}

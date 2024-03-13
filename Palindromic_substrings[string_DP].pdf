@@ -1,0 +1,66 @@
+Given a string s, return the number of palindromic substrings in it.
+A string is a palindrome when it reads the same backward as forward.
+A substring is a contiguous sequence of characters within the string.
+
+Example 1:
+
+Input: s = "abc"
+Output: 3
+Explanation: Three palindromic strings: "a", "b", "c".
+
+Example 2:
+
+Input: s = "aaa"
+Output: 6
+Explanation: Six palindromic strings: "a", "a", "a", "aa", "aa", "aaa".
+
+Constraints:
+
+1 <= s.length <= 1000
+s consists of lowercase English letters.
+--------------------------------------------------------------------CODE--------------------------------------------------------------
+in Java
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=--=-=
+class Solution {
+    public int countSubstrings(String s) {
+        char[] str = s.toCharArray();
+        int count = 0;
+        for(int i = 0; i < str.length; i++) {
+            for(int j = i; j < str.length; j++) {
+                if(isPalin(s.substring(i, j + 1))) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+    private boolean isPalin(String str) {
+        StringBuilder revstr = new StringBuilder();
+        for(int i = str.length() - 1; i >= 0; i--) {
+            revstr.append(str.charAt(i));
+        }
+        return str.equals(revstr.toString());
+    }
+}
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-
+in Rust
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-----=-=-
+impl Solution {
+    pub fn count_substrings(s: String) -> i32 {
+        let s_chars: Vec<char> = s.chars().collect();
+        let mut count = 0;
+        for i in 0..s_chars.len() {
+            for j in i..s_chars.len() {
+                if Self::is_palin(&s_chars[i..=j]) {
+                    count += 1;
+                }
+            }
+        }
+        count
+    }
+    fn is_palin(s: &[char]) -> bool {
+        let mut rev_str = s.to_owned();
+        rev_str.reverse();
+        s == &rev_str[..]
+    }
+}

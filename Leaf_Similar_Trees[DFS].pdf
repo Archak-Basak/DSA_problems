@@ -1,0 +1,81 @@
+Consider all the leaves of a binary tree, from left to right order, the values of those leaves form a leaf value sequence.
+
+For example, in the given tree above, the leaf value sequence is (6, 7, 4, 9, 8).
+
+Two binary trees are considered leaf-similar if their leaf value sequence is the same.
+
+Return true if and only if the two given trees with head nodes root1 and root2 are leaf-similar.
+
+Example 1:
+
+Input: root1 = [3,5,1,6,2,9,8,null,null,7,4], root2 = [3,5,1,6,7,4,2,null,null,null,null,null,null,9,8]
+Output: true
+
+Example 2:
+
+Input: root1 = [1,2,3], root2 = [1,3,2]
+Output: false
+
+Constraints:
+
+The number of nodes in each tree will be in the range [1, 200].
+Both of the given trees will have values in the range [0, 200].
+
+--------------------------------------------------------------------CODE--------------------------------------------------------------
+in Java
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=--=-=
+class Solution {
+    public boolean leafSimilar(TreeNode root1, TreeNode root2) {
+        List<Integer> leaf1 = new ArrayList<>();
+        List<Integer> leaf2 = new ArrayList<>();
+
+        dfs(root1, leaf1);
+        dfs(root2, leaf2);
+
+        return leaf1.equals(leaf2);
+    }
+    private void dfs(TreeNode root, List<Integer> leaf) {
+
+        if(root == null)
+            return;
+
+        if(root.left == null && root.right == null) {
+            leaf.add(root.val);
+            return;
+        }
+        dfs(root.left, leaf);
+        dfs(root.right, leaf);
+    }
+}
+
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-
+in Rust
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-----=-=-
+use std::rc::Rc;
+use std::cell::RefCell;
+
+impl Solution {
+    pub fn leaf_similar(root1: Option<Rc<RefCell<TreeNode>>>, root2: Option<Rc<RefCell<TreeNode>>>) -> bool {
+
+        let mut leaf1 = Vec::new();
+        let mut leaf2 = Vec::new();
+
+        Solution::dfs(&root1, &mut leaf1);
+        Solution::dfs(&root2, &mut leaf2);
+
+        leaf1 == leaf2
+    }
+
+    fn dfs(node: &Option<Rc<RefCell<TreeNode>>>, leaf: &mut Vec<i32>) {
+
+        if let Some(node) = node {
+            let node_borrow = node.borrow();
+
+            if node_borrow.left.is_none() && node_borrow.right.is_none() {
+                leaf.push(node_borrow.val);
+            }
+            Solution::dfs(&node_borrow.left, leaf);
+            Solution::dfs(&node_borrow.right, leaf);
+        }
+    }
+}
