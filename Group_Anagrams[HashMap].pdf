@@ -1,0 +1,137 @@
+Given an array of strings strs, group the anagrams together. You can return the answer in any order.
+An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase, typically using all the original letters exactly once.
+
+Example 1:
+
+Input: strs = ["eat","tea","tan","ate","nat","bat"]
+Output: [["bat"],["nat","tan"],["ate","eat","tea"]]
+
+Example 2:
+
+Input: strs = [""]
+Output: [[""]]
+
+Example 3:
+
+Input: strs = ["a"]
+Output: [["a"]]
+
+Constraints:
+
+1 <= strs.length <= 104
+0 <= strs[i].length <= 100
+strs[i] consists of lowercase English letters.
+--------------------------------------------------------------------CODE--------------------------------------------------------------
+in Java
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=--=-=
+                                                                Approach 2:
+=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        Map<String, List<String>> group = new HashMap<>();
+        for(String s : strs) {
+            char[] sortedChars = s.toCharArray();
+            Arrays.sort(sortedChars);
+            String sortedStr = new String(sortedChars);
+            if(!group.containsKey(sortedStr)) {
+                group.put(sortedStr, new ArrayList<>());
+            }
+            group.get(sortedStr).add(s);
+        }
+        return new ArrayList<>(group.values());
+    }
+}
+=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+                                                                    Approach 1:
+=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+class Solution {
+    public List<List<String>> groupAnagrams(String[] strs) {
+        List<List<String>> grpAna = new ArrayList<>();
+        boolean[] visited = new boolean[strs.length];
+        for(int i = 0; i < strs.length; i++) {
+            if(!visited[i]) {
+                List<String> group = new ArrayList<>();
+                group.add(strs[i]);
+                visited[i] = true;
+                for(int j = i + 1; j < strs.length; j++) {
+                    if(!visited[j] && isAnagram(strs[i],strs[j])) {
+                        group.add(strs[j]);
+                        visited[j] = true;
+                    }
+                }
+                grpAna.add(group);
+            }
+        }
+        return grpAna;
+    }
+    public boolean isAnagram(String s, String t) {
+        if (s.length() != t.length())
+            return false;
+
+        int[] charCount = new int[26];
+        for (int i = 0; i < s.length(); i++) {
+            charCount[s.charAt(i) - 'a']++;
+            charCount[t.charAt(i) - 'a']--;
+        }
+        for (int count : charCount) {
+        if (count != 0) {
+            return false;
+            }
+        }
+        return true;
+    }
+}
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-
+in Rust
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-----=-=-
+                                                                        Approach 2:
+=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+use std::collections::HashMap;
+impl Solution {
+    pub fn group_anagrams(strs: Vec<String>) -> Vec<Vec<String>> {
+        let mut group: HashMap<Vec<char>, Vec<String>> = HashMap::new();
+        for s in strs {
+            let mut sorted_chars: Vec<char> = s.chars().collect();
+            sorted_chars.sort();
+            let ent = group.entry(sorted_chars).or_insert(Vec::new());
+            ent.push(s);
+        }
+        group.into_iter().map(|(_, group)| group).collect()
+    }
+}
+=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+                                                                        Approach 1:
+=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+use std::collections::HashMap;
+impl Solution {
+    pub fn group_anagrams(strs: Vec<String>) -> Vec<Vec<String>> {
+        let mut grp_ana: Vec<Vec<String>> = Vec::new();
+        let mut visited = vec![false;strs.len()];
+        for i in 0..strs.len() {
+            if !visited[i] {
+                let mut group: Vec<String> = Vec::new();
+                group.push(strs[i].clone());
+                visited[i] = true;
+                for j in (i + 1)..strs.len() {
+                    if !visited[j] && Self::is_anagram(&strs[i], &strs[j]) {
+                        group.push(strs[j].clone());
+                        visited[j] = true;
+                    }
+                }
+                grp_ana.push(group);
+            }
+        }
+        grp_ana
+    }
+    fn is_anagram(s: &String, t: &String) -> bool {
+        if s.len() != t.len() {
+            return false;
+        }
+        let mut char_count = HashMap::new();
+        for (char_s, char_t) in s.chars().zip(t.chars()) {
+            *char_count.entry(char_s).or_insert(0) += 1;
+            *char_count.entry(char_t).or_insert(0) -= 1;
+        }
+        char_count.values().all(|&count| count == 0)
+    }
+} *************************************************** Testcases Passed : 111/120 But throws TLE(Time Limit Exceeded)*******************************************

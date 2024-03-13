@@ -1,0 +1,115 @@
+Given the root of a binary search tree (BST) with duplicates, return all the mode(s) (i.e., the most frequently occurred element) in it.
+
+If the tree has more than one mode, return them in any order.
+
+Assume a BST is defined as follows:
+
+The left subtree of a node contains only nodes with keys less than or equal to the node's key.
+The right subtree of a node contains only nodes with keys greater than or equal to the node's key.
+Both the left and right subtrees must also be binary search trees.
+
+Example 1:
+
+Input: root = [1,null,2,2]
+Output: [2]
+Example 2:
+
+Input: root = [0]
+Output: [0]
+
+Constraints:
+
+The number of nodes in the tree is in the range [1, 104].
+-105 <= Node.val <= 105
+
+Follow up: Could you do that without using any extra space? (Assume that the implicit stack space incurred due to recursion does not count).
+
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=
+in Java
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-----=-=
+class Solution {
+    int count = 0, maxCount = 0;
+    TreeNode prev;
+
+    public int[] findMode(TreeNode root) {
+        if(root == null)
+            return new int[]{};
+
+        prev = root;
+        List<Integer> lst = new ArrayList<>();
+        dfs(root, lst);
+        int[] res = new int[lst.size()];
+
+        for(int i = 0; i < res.length; i++) {
+            res[i] = lst.get(i);
+        }
+        return res;
+    }
+    public void dfs(TreeNode node, List<Integer> lst) {
+
+        if(node == null)
+            return;
+
+        dfs(node.left, lst);
+        count = (prev.val == node.val) ? count+1 : 1;
+        if(count == maxCount)
+            lst.add(node.val);
+        else if(count > maxCount) {
+            maxCount = count;
+            lst.clear();
+            lst.add(node.val);
+        }
+        prev = node;
+        dfs(node.right, lst);
+    }
+}
+
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=
+in Rust
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-----=-=
+
+use std::rc::Rc;
+use std::cell::RefCell;
+impl Solution {
+    pub fn find_mode(root: Option<Rc<RefCell<TreeNode>>>) -> Vec<i32> {
+        let mut sol = Solurion {
+            count: 0,
+            max_count: 0,
+            prev: None,
+        };
+
+        let mut res = Vec::new();
+        sol.dfs(&root, &mut res);
+
+        res
+    }
+    fn dfs(&mut self, node: &Option<Rc<RefCell<TreeNode>>>, lst: &mut Vec<i32>) {
+
+        if let Some(n) = node {
+            let mut n_borrow = n.borrow_mut();
+            self.dfs(&n_borrow.left, lst);
+
+            self.count = if let Some(prev_node) = &self.prev {
+                if prev_node.borrow().val == n_borrow.val {
+                    self.count + 1
+                } else {
+                    1
+                }
+            } else {
+                1
+            };
+
+            if self.count == self.max_count {
+                lst.push(n_borrow.val);
+
+            } else if self.count > self.max_count {
+                self.max_count = self.count;
+                lst.clear();
+                lst.push(n_borrow.val);
+            }
+
+            self.prev = Some(Rc::clone(n));
+            self.dfs(&n_borrow.right, lst);
+        }
+    }
+}

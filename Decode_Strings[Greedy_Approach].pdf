@@ -1,0 +1,107 @@
+Given an encoded string, return its decoded string.
+
+The encoding rule is: k[encoded_string], where the encoded_string inside the square brackets is being repeated exactly k times. Note that k is guaranteed to be a positive integer.
+
+You may assume that the input string is always valid; there are no extra white spaces, square brackets are well-formed, etc. Furthermore, you may assume that the original data does not contain any digits and that digits are only for those repeat numbers, k. For example, there will not be input like 3a or 2[4].
+
+The test cases are generated so that the length of the output will never exceed 105.
+
+Example 1:
+
+Input: s = "3[a]2[bc]"
+Output: "aaabcbc"
+
+Example 2:
+
+Input: s = "3[a2[c]]"
+Output: "accaccacc"
+
+Example 3:
+
+Input: s = "2[abc]3[cd]ef"
+Output: "abcabccdcdcdef"
+
+Constraints:
+
+1 <= s.length <= 30
+s consists of lowercase English letters, digits, and square brackets '[]'.
+s is guaranteed to be a valid input.
+All the integers in s are in the range [1, 300].
+--------------------------------------------------------------------CODE--------------------------------------------------------------
+in Java
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=--=-=
+import java.util.Stack;
+class Solution {
+    public String decodeString(String s) {
+        StringBuilder res = new StringBuilder();
+        Stack<Integer> countStack = new Stack<>();
+        Stack<StringBuilder> strStack = new Stack<>();
+        int i = 0;
+        while (i < s.length()) {
+            char currentChar = s.charAt(i);
+            if (Character.isDigit(currentChar)) { //Extracting the Digit
+                int repeatCount = 0;
+                while (Character.isDigit(s.charAt(i))) {
+                    repeatCount = repeatCount * 10 + (s.charAt(i) - '0');
+                    i++;
+                }
+                countStack.push(repeatCount);
+            } else if (currentChar == '[') {
+                strStack.push(res);
+                res = new StringBuilder();
+                i++;
+            } else if (currentChar == ']') {
+                StringBuilder temp = res;
+                res = strStack.pop();
+                int repeatCount = countStack.pop();
+                for (int j = 0; j < repeatCount; j++) {
+                    res.append(temp);
+                }
+                i++;
+            } else {
+                res.append(currentChar);
+                i++;
+            }
+        }
+        return res.toString();
+    }
+}
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=-=-=-
+in Rust
+--=-=-=-=-=-=-=-=-=-=-=-=-=-==--=--=--=-=--=--=-=-=--=--=-=-==--=--=-=--=-==-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-----=-=-
+impl Solution {
+    pub fn decode_string(s: String) -> String {
+        let mut res = String::new();
+        let mut count_stack: Vec<usize> = Vec::new();
+        let mut str_stack: Vec<String> = Vec::new();
+        let mut i = 0;
+        while i < s.len() {
+            let current_char = s.chars().nth(i).unwrap();
+            if current_char.is_digit(10) {
+                let mut repeat_count = 0;//Extracting the digit
+                while let Some(digit) = s.chars().nth(i).unwrap().to_digit(10) {
+                    repeat_count = repeat_count * 10 + digit as usize;
+                    i += 1;
+                }
+                count_stack.push(repeat_count);
+            } else if current_char == '[' {
+                str_stack.push(res);
+                res = String::new();
+                i += 1;
+            } else if current_char == ']' {
+                let temp = res.clone();
+                res = str_stack.pop().unwrap();
+                let repeat_count = count_stack.pop().unwrap();
+
+                for _ in 0..repeat_count {
+                    res.push_str(&temp);
+                }
+                i += 1;
+            } else {
+                res.push(current_char);
+                i += 1;
+            }
+        }
+        res
+    }
+}
